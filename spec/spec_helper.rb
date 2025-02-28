@@ -20,6 +20,13 @@ end
 # Define a mock ActiveRecord model
 class User < ActiveRecord::Base; end
 
+# Mock Rails::VERSION::MAJOR for tests
+module Rails
+  module VERSION
+    MAJOR = 7
+  end
+end
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"

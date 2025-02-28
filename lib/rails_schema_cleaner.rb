@@ -18,8 +18,14 @@ module RailsSchemaCleaner
     timestamp = Time.now.utc.strftime("%Y%m%d%H%M%S")
     migration_filename = "db/migrate/#{timestamp}_drop_orphaned_tables.rb"
 
+    # Get Rails major version
+    rails_major_version = Rails::VERSION::MAJOR
+
+    # Define the migration class with the correct format
+    migration_class = "ActiveRecord::Migration[#{rails_major_version}.0]"
+
     migration_content = <<-RUBY
-      class DropOrphanedTables < ActiveRecord::Migration[5.0]
+      class DropOrphanedTables < #{migration_class}
         def change
           #{tables_to_drop.map { |t| "drop_table :#{t}" }.join("\n    ")}
         end
