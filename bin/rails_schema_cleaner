@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require "rails_schema_cleaner"
+
+RailsSchemaCleaner.generate_migration
