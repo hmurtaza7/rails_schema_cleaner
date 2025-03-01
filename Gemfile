@@ -7,12 +7,12 @@ gemspec
 
 gem "rake", "~> 13.0"
 
-group :development, :test do
+group :development do
   gem "standard", "~> 1.3"
 end
 
 group :development, :test do
-  gem "rspec", "~> 3.0"
-  gem "sqlite3"  # Use SQLite for testing
   gem "activerecord", ">= 5.0"
+  gem "rspec", "~> 3.0"
+  gem "sqlite3"
 end

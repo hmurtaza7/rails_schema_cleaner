@@ -1,39 +1,79 @@
 # RailsSchemaCleaner
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rails_schema_cleaner`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Overview
+`rails_schema_cleaner` is a Ruby gem that helps keep your Rails database schema clean by identifying and removing orphaned tables (tables that do not have corresponding ActiveRecord models). It generates a migration file to drop these unused tables safely.
 
 ## Installation
+Add this gem to your `Gemfile`:
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem "rails_schema_cleaner"
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Then run:
 
-```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```sh
+bundle install
+```
+
+Alternatively, install it manually:
+
+```sh
+gem install rails_schema_cleaner
 ```
 
 ## Usage
+### **1. Detect Orphaned Tables**
+To list all tables in the database that do not have an associated model, run:
 
-TODO: Write usage instructions here
+```sh
+bundle exec rails_schema_cleaner detect
+```
 
-## Development
+This will return an array of orphaned table names.
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### **2. Generate Migration to Drop Orphaned Tables**
+To create a Rails migration file that drops these tables, run:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```sh
+bundle exec rails_schema_cleaner clean
+```
 
-## Contributing
+This will generate a timestamped migration file in `db/migrate/`, e.g.:
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rails_schema_cleaner.
+```sh
+db/migrate/20240228123456_drop_orphaned_tables.rb
+```
+
+### **3. Run the Migration**
+Execute the migration to drop the orphaned tables:
+
+```sh
+rails db:migrate
+```
+
+## Compatibility
+- Works with Rails >=5.0
+- Supports SQLite, PostgreSQL, and MySQL
+
+## How It Works
+1. Fetches all database tables using `ActiveRecord::Base.connection.tables`
+2. Fetches all existing model table names using `ActiveRecord::Base.descendants.map(&:table_name)`
+3. Compares both lists and identifies tables that do not have an associated model
+4. Generates a Rails migration file to drop those tables
+
+## Running Tests
+Run RSpec tests with:
+
+```sh
+rspec
+```
 
 ## License
+This project is licensed under the MIT License.
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+## Contributions
+Pull requests are welcome! Please open an issue to discuss any significant changes before submitting a PR.
+
+## Author
+Created by [Hassan Murtaza](https://github.com/hmurtaza7).

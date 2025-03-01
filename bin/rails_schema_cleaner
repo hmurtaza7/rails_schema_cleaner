@@ -1,4 +1,34 @@
 #!/usr/bin/env ruby
-require "rails_schema_cleaner"
 
-RailsSchemaCleaner.generate_migration
+require "bundler/setup"
+
+begin
+  require "rails"
+  require "active_record"
+  require "rails_schema_cleaner"
+
+  # Ensure we are inside a Rails application
+  unless Dir.exist?("config") && File.exist?("config/application.rb")
+    puts "Error: This command must be run inside a Rails application."
+    exit 1
+  end
+
+  # Command-line arguments
+  command = ARGV[0]
+
+  case command
+  when "detect"
+    puts "Orphaned tables: #{RailsSchemaCleaner.orphaned_tables.join(', ')}"
+  when "clean"
+    RailsSchemaCleaner.generate_migration
+    puts "Migration file created to drop orphaned tables."
+  else
+    puts "Usage:"
+    puts "  rails_schema_cleaner detect   # Lists orphaned tables"
+    puts "  rails_schema_cleaner clean    # Generates migration to drop orphaned tables"
+  end
+
+rescue LoadError 
+  puts "Error: Rails is not installed. Ensure you are running this inside a Rails application."
+  exit 1
+end
