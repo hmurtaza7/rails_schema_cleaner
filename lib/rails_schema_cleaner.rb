@@ -25,7 +25,7 @@ module RailsSchemaCleaner
     # Define the migration class with the correct format
     migration_class = "ActiveRecord::Migration[#{Rails::VERSION::MAJOR}.0]"
 
-    migration_content = <<-RUBY
+    migration_content = <<~RUBY
       class DropOrphanedTables < #{migration_class}
         def change
           #{tables_to_drop.map { |t| "drop_table :#{t}" }.join("\n    ")}
